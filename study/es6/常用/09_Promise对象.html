@@ -43,7 +43,7 @@
 -->
 <script type="text/javascript">
 
-    // 创建promise对象
+    /*// 创建promise对象
     let promise = new Promise((resolve, reject) => {
         // 初始化promise状态：pending：初始化
         console.log('111');
@@ -69,9 +69,53 @@
             console.log(data, '成功了...');
         }, (error) => { // 失败的回调
             console.log(error, '失败了...');
-        });
+        });*/
 
 
+    // 定义获取新闻的功能函数
+    function getNews(url) {
+        let promise = new Promise((resolve, reject) => {
+            // 状态：初始化
+            // 执行异步任务
+            // 创建xmlHttp实例对象
+            let xmlHttp = new XMLHttpRequest();
+            // 绑定监听 readState
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState === 4) { // 请求成功
+                    if (xmlHttp.status == 200) {
+                        console.log(xmlHttp.responseText);
+                        // 修改状态
+                        resolve(xmlHttp.responseText); // 修改promise的状态为成功的状态
+                    } else {
+                        resolve('暂时没有新闻内容');
+                    }
+                }
+            };
+
+            // open 设置请求的方式以及url
+            xmlHttp.open('GET', url);
+
+            // 发送
+            xmlHttp.send();
+        })
+        return promise;
+    }
+
+    getNews('http://localhost:3000/news?id=1')
+    .then((data)=>{
+        console.log(data);
+        // 发送请求获取评论内容准备url
+        let commentsUrl = JSON.parse(data).commentsUrl;
+        let url = 'http://localhost:3000' + commentsUrl;
+        // 发送请求
+        return getNews(url);
+    },(error)=>{
+        console.log(error);
+    }).then((data)=>{
+        console.log(data);
+    },(error)=>{
+        console.log(error);
+    })
 </script>
 </body>
 </html>
