@@ -54,6 +54,24 @@
     console.log(iteratorObj.next());
     console.log(iteratorObj.next());
     console.log(iteratorObj.next());
+
+    // 将iterator接口部署到指定的数据类型上，可以使用for of去循环遍历
+    // 数组，字符串，arguments，set容器，map容器
+    for (let i of arr) {
+        console.log(i);
+    }
+
+    let str = 'abcdefg';
+    for (let i of str) {
+        console.log(i);
+    }
+
+    function fun() {
+        for (let i of arguments) {
+            console.log(i);
+        }
+    }
+    fun(1,4,5,'abc');
 </script>
 </body>
 </html>
