@@ -62,7 +62,7 @@
                 method: 'GET',
                 url,
                 success: data => resolve(data),
-                reject: data => reject(data)
+                reject: error => resolve(false)
             })
         })
     }
@@ -70,6 +70,7 @@
     async function sendXml() {
         let result = await getNews('http://localhost:3000/news2?id=7');
         console.log(result);
+        if (!result) {alert('暂时没有新闻推送。。。'); return ;}
         result = await getNews('http://localhost:3000' + result.commentsUrl);
         console.log(result);
     }
