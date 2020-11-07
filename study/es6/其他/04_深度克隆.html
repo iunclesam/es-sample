@@ -56,7 +56,8 @@
             特点：拷贝的时候生成新数据，修改拷贝以后的数据不会影响原数据
 
      */
-    let obj = {username: 'kobe'};
+
+    /*let obj = {username: 'kobe'};
     let obj2 = Object.assign(obj);
     console.log(obj2);
     obj2.username = 'wade';
@@ -77,7 +78,83 @@
     let arr4 = JSON.parse(JSON.stringify(arr));
     console.log(arr4);
     arr4[2].username = 'duncan';
-    console.log(arr, arr4);
+    console.log(arr, arr4);*/
+
+    /*
+        思考：
+            如何实现深度拷贝（克隆）
+            拷贝的数据里有对象/数组
+            拷贝的数据里不能有对象/数组
+            即使有对象/数组可以继续遍历对象、数组拿到里边没一项值，一直拿到是基本数据类型，然后再去复制，就是深度拷贝
+     */
+    /*
+        知识点储备
+        如何判断数据类型：arr ---> Array null ---> Null
+        1、typeof返回的数据类型：String，Number，Boolean，Undefined，Object，Function
+        2、Object.prototype.toString.call(obj)
+     */
+
+    let result = 'abcd';
+    result = null;
+    result = [1, 3];
+    console.log(Object.prototype.toString.call(result).slice(8, -1));
+
+    // for in 循环 对象（属性名）数组（下表）
+    let obj = {username: 'kebo', age: 39};
+    for (let i in obj) {
+        console.log(i);
+    }
+
+    let arr = [1, 3, 'abc'];
+    for (let i in arr) {
+        console.log(i);
+    }
+
+    // 定义检测数据类型的功能函数
+    function checkedType(target) {
+        return Object.prototype.toString.call(target).slice(8, -1);
+    }
+
+    // 实现深度克隆 ---> 对象/数组
+    function clone(target) {
+        // 判断拷贝的数据类型
+        // 初始化变量result 成为最终克隆的数据
+        let result, targetType = checkedType(target);
+        if (targetType === 'Object') {
+            result = {};
+        } else if (targetType === 'Array') {
+            result = [];
+        } else {
+            return target;
+        }
+
+        // 遍历目标数据
+        for (let i in target) {
+            // 获取遍历数据结构的每一项值
+            let value = target[i];
+            // 判断目标结构里的每一个值是否存在对象/数组
+            if (checkedType(value) === 'Object' || checkedType(value) === 'Array') { // 对象/数组里嵌套了对象/数组
+                // 继续遍历获取到的value值
+                result[i] = clone(value);
+            } else {
+                // 获取到的value值是基本的数据类型或者是函数
+                result[i] = value;
+            }
+        }
+        return result;
+    }
+
+    let arr3 = [1, 2, {username: 'kobe', age: 39}];
+    let arr4 = clone(arr3);
+    console.log(arr4);
+    arr4[2].username = 'wade';
+    console.log(arr3, arr4);
+
+    let obj3 = {username: 'kobe', age: 39};
+    let obj4 = clone(obj3);
+    console.log(obj4);
+    obj4.username = 'wade';
+    console.log(obj3, obj4);
 </script>
 </body>
 </html>
